@@ -5,5 +5,6 @@ class Preuzimanje extends ChangeNotifier {
 
   void togglePreuzimanje() {
     preuzeto = !preuzeto;
+    notifyListeners();
   }
 }

@@ -15,13 +15,10 @@ class _HomeScreenState extends State<HomeScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   PreuzmiFunc func = PreuzmiFunc();
   bool dialog = true;
-  // bool preuzetiFajlovi = false;
 
   @override
   void initState() {
     func.provjeriFajlove().then((val) {
-      print('initstate');
-
       //fajlovi nisu preuzeti, prikazi dialog
       if (!val) {
         showDialog(
@@ -29,20 +26,18 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (ctx) {
               return CustomAlert();
             }).then((value) {
+          //dialog zatvoren sa NE
+          if (value == null) {
+            Provider.of<Preuzimanje>(context, listen: false)
+                .togglePreuzimanje();
+          }
 
-              if(value==null){
-                Provider.of<Preuzimanje>(context,listen: false).togglePreuzimanje();
-              }
-          //dialog zatvoren
           setState(() => dialog = false);
         });
       }
       //fajlovi vec preuzeti
       else {
-        setState(() {
-          dialog = false;
-          // preuzetiFajlovi = true;
-        });
+        setState(() => dialog = false);
       }
     });
 
@@ -51,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     return Scaffold(
       appBar: AppBar(
         title: Text('Task2'),

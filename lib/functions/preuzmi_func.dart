@@ -6,7 +6,6 @@ class PreuzmiFunc {
   Future<bool> provjeriFajlove() async {
     Directory dir = await path.getExternalStorageDirectory();
     String downloadPath = '${dir.path}/audio';
-    print(dir.path);
     Directory downloadDir = Directory(downloadPath);
     if (downloadDir.existsSync()) {
       return true;
