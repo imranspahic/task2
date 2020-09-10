@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "132871101019",
+    "firebase_url": "https://task2-9277e.firebaseio.com",
+    "project_id": "task2-9277e",
+    "storage_bucket": "task2-9277e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:132871101019:android:91f0ae067b0ddb98df7d7e",
+        "android_client_info": {
+          "package_name": "com.example.task2np"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "132871101019-c9r23l0re4n9p18aict1o8quvkk4sctj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx2V_Ddq1mJ6knRQ7PFzanaFMSfMRwtKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "132871101019-c9r23l0re4n9p18aict1o8quvkk4sctj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "132871101019-hv6c30vdsu5hgf3lc2vue8h0742avqj5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.task2np"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
