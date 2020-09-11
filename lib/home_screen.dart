@@ -5,6 +5,8 @@ import './widgets/audio.dart';
 import './functions/preuzmi_func.dart';
 import 'package:provider/provider.dart';
 import './providers/preuzimanje.dart';
+import './models/AudioModel.dart';
+import './models/PermissionModel.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AudioPlayer audioPlayer = AudioPlayer();
   PreuzmiFunc func = PreuzmiFunc();
   bool dialog = true;
-
+  
   @override
   void initState() {
     func.provjeriFajlove().then((val) {
@@ -40,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => dialog = false);
       }
     });
-
     super.initState();
   }
 
@@ -54,66 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
       ),
       backgroundColor: Colors.indigo[800],
-      body: !dialog
-          ? SingleChildScrollView(
-              child: Column(children: [
-                Audio(
-                  index: 1,
-                  pokreni: 'ikona',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 2,
-                  pokreni: 'ikona',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 3,
-                  pokreni: 'ikona',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 4,
-                  pokreni: 'ikona',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 5,
-                  pokreni: 'ikona',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 6,
-                  pokreni: 'tekst',
-                  tekst: 'tekst prvi',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 7,
-                  pokreni: 'tekst',
-                  tekst: 'tekst drugi',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 8,
-                  pokreni: 'tekst',
-                  tekst: 'tekst treci',
-                  audioPlayer: audioPlayer,
-                ),
-                Audio(
-                  index: 9,
-                  pokreni: 'slika',
-                  audioPlayer: audioPlayer,
-                  slika: 'slika_1.jpg',
-                ),
-                Audio(
-                  index: 10,
-                  pokreni: 'slika',
-                  audioPlayer: audioPlayer,
-                  slika: 'slika_2.png',
-                ),
-              ]),
-            )
+      body: !dialog ?
+      ListView.builder(
+        itemCount: 10,
+        itemBuilder: (ctx, index) {
+          return Audio(audioModel: Provider.of<AppFunctions>(context, listen:false).audiomodels[index], audioPlayer: audioPlayer,);
+        })
+
           : Container(),
     );
   }

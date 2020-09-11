@@ -6,20 +6,26 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:task2/widgets/alert_dialog.dart';
 import '../providers/preuzimanje.dart';
+import '../models/AudioModel.dart';
+import '../models/PermissionModel.dart';
 
 class Audio extends StatefulWidget {
-  final int index;
-  final String pokreni;
-  final String tekst;
-  final String slika;
+
+  final AudioModel audioModel;
+
+  // final int index;
+  // final String pokreni;
+  // final String tekst;
+  // final String slika;
   final AudioPlayer audioPlayer;
 
   Audio({
-    this.index,
-    this.pokreni,
-    this.tekst,
+    // this.index,
+    // this.pokreni,
+    // this.tekst,
+    this.audioModel,
     this.audioPlayer,
-    this.slika,
+    // this.slika,
   });
 
   @override
@@ -29,9 +35,13 @@ class Audio extends StatefulWidget {
 class _AudioState extends State<Audio> {
   Future imgFuture;
   String url = '';
+  bool check;
+  bool isinit;
+  List<ImageModel> list;
+
 
   Future<dynamic> getImage() async {
-    final imgRef = FirebaseStorage.instance.ref().child(widget.slika);
+    final imgRef = FirebaseStorage.instance.ref().child(widget.audioModel.slika);
     url = await imgRef.getDownloadURL();
     return url;
   }
@@ -48,7 +58,7 @@ class _AudioState extends State<Audio> {
       return;
     }
     Directory dir = await path.getExternalStorageDirectory();
-    String audioPath = '${dir.path}/audio/${widget.index}.mp3';
+    String audioPath = '${dir.path}/audio/${widget.audioModel.id}.mp3';
 
     if (widget.audioPlayer.state == AudioPlayerState.PLAYING) {
       await widget.audioPlayer.stop();
@@ -73,17 +83,41 @@ class _AudioState extends State<Audio> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    isinit = true;
+    PermissionModel().requestPermission().then((value) => PermissionModel()
+        .checkPermissionStatus()
+        .then((value) => check = value));
+  }
+
+    @override
+  void didChangeDependencies() {
+    
+    super.didChangeDependencies();
+
+    if (isinit == true) {
+      final prov = Provider.of<AppFunctions>(context);
+      prov.processDocuments(false);
+      list = prov.updatedImageModels;
+      isinit = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    final imageModels = Provider.of<AppFunctions>(context).imageModels;
     return Card(
       elevation: 10,
       child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: ListTile(
               leading: CircleAvatar(
-                child: Text(widget.index.toString()),
+                child: Text(widget.audioModel.id.toString()),
               ),
-              title: Text('Audio ${widget.index}'),
-              trailing: widget.pokreni == 'ikona'
+              title: Text('Audio ${widget.audioModel.id}'),
+              trailing: widget.audioModel.pokreni == 'ikona'
                   ? widget.audioPlayer.state != AudioPlayerState.PLAYING
                       ? IconButton(
                           icon: Icon(Icons.play_arrow),
@@ -93,13 +127,13 @@ class _AudioState extends State<Audio> {
                           icon: Icon(Icons.stop),
                           onPressed: stopAudio,
                         )
-                  : widget.pokreni == 'tekst'
+                  : widget.audioModel.pokreni == 'tekst'
                       ? InkWell(
                           child: Text(widget.audioPlayer.state !=
                                       AudioPlayerState.PLAYING &&
                                   widget.audioPlayer.state !=
                                       AudioPlayerState.PAUSED
-                              ? widget.tekst
+                              ? widget.audioModel.tekst
                               : widget.audioPlayer.state ==
                                       AudioPlayerState.PAUSED
                                   ? 'Pauzirano'
@@ -112,11 +146,19 @@ class _AudioState extends State<Audio> {
                                   ? resumeAudio
                                   : pauseAudio,
                         )
-                      : GestureDetector(
+                      : 
+                      ///slika prikaz
+                      /////
+                      /////
+                      /////
+                      ///
+                      GestureDetector(
                           onTap: () => playAudio(),
                           child: Container(
                             width: 100,
                             height: 50,
+
+                          
                             child: FutureBuilder(
                                 future: getImage(),
                                 builder: (ctx, snapshot) {
@@ -127,8 +169,11 @@ class _AudioState extends State<Audio> {
                                     return Container();
                                   }
                                 }),
+
+                            
                           ),
-                        ))),
+                        )
+                        )),
     );
   }
 }

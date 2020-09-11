@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:132871101019:android:79e4be8e7b6c6ff1df7d7e",
+        "mobilesdk_app_id": "1:132871101019:android:91f0ae067b0ddb98df7d7e",
         "android_client_info": {
-          "package_name": "com.example.task2"
+          "package_name": "com.example.task2np"
         }
       },
       "oauth_client": [
@@ -30,6 +30,13 @@
             {
               "client_id": "132871101019-c9r23l0re4n9p18aict1o8quvkk4sctj.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "132871101019-hv6c30vdsu5hgf3lc2vue8h0742avqj5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.task2np"
+              }
             }
           ]
         }
