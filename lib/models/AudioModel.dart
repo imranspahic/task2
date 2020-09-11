@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,7 +10,8 @@ class AudioModel {
   int id;
   String name;
   String audioUrl;
-  AudioModel({@required this.id, @required this.name});
+  File file;
+  AudioModel({@required this.id, @required this.name, this.file});
 }
 
 class ImageModel {
@@ -70,33 +72,28 @@ class AppFunctions with ChangeNotifier {
 
   List<ImageModel> updatedImageModels = [];
 
-  List<ImageModel> get imageModels {
-    return [..._imageModels];
-  }
-
-  List<AudioModel> get audiomodels {
-    return [..._audioModels];
-  }
-
-  List<File> audioFiles = [];
+  List<AudioModel> audioFiles = [];
   List<File> imageFiles = [];
 
   void insertInFirestore(int id, String name, dynamic model, bool audio) async {
     final storageRef = FirebaseStorage.instance.ref().child(name);
     final url = await storageRef.getDownloadURL();
 
-    FirebaseFirestore.instance
-        .collection("Files")
-        .doc(audio == false ? "ImageFiles" : "AudioFiles")
-        .set({"id": id, "Name": name, "url": url});
-    await saveDocFromFirestore(name, url, audio);
-    checkForUpdate(audio, name, url, id);
-    print(url);
-    ftrBldr();
-  }
+    if (audio == false) {
+      FirebaseFirestore.instance
+          .collection("Files")
+          .doc("AllFiles")
+          .collection(audio == false ? "ImageFiles" : "AudioFiles")
+          .doc(name)
+          .set({"id": id, "Name": name, "url": url});
+    }
 
-  Future<void> ftrBldr() async {
-    print("Everything is done");
+    await saveDocFromFirestore(name, url, audio, id);
+    if (audio == true) {
+      checkForUpdate(audio, name, url, id);
+    }
+
+    print(url);
   }
 
   Future<void> checkForUpdate(
@@ -106,8 +103,47 @@ class AppFunctions with ChangeNotifier {
     }
   }
 
+  Widget retWdgt() {
+    ListTile tile;
+    audioFiles.forEach((element) {
+      if (element.id <= 5) {
+        tile = ListTile(
+          leading: Icon(Icons.play_arrow),
+          onTap: () {},
+        );
+      } else if (element.id >= 6 && element.id <= 8) {
+        tile = ListTile(
+          title: Text("Press to Play"),
+          onTap: () {},
+        );
+      }
+    });
+    return tile;
+  }
+
+  connectTiles() {
+    final List<ListTile> audioList = [];
+    audioFiles.forEach((element) {
+      var tile;
+      if (element.id <= 5) {
+        tile = ListTile(
+          leading: Icon(Icons.play_arrow),
+          onTap: () {},
+        );
+        audioList.add(tile);
+      } else if (element.id >= 6 && element.id >= 8) {
+        tile = ListTile(
+          title: Text("Press to Play"),
+          onTap: () {},
+        );
+        audioList.add(tile);
+      }
+    });
+    return audioList;
+  }
+
   Future saveDocFromFirestore(
-      String name, String documentURL, bool check) async {
+      String name, String documentURL, bool check, int id) async {
     final url = await http.get(documentURL);
     String pathName = check == true ? "/audios" : "/images";
     final path = await getExternalStorageDirectory();
@@ -130,7 +166,7 @@ class AppFunctions with ChangeNotifier {
     } else {
       if (!audioFiles.contains(finFile)) {
         notifyListeners();
-        audioFiles.add(finFile);
+        audioFiles.add(AudioModel(id: id, name: name, file: finFile));
       }
     }
   }
